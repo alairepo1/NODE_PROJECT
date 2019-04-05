@@ -12,6 +12,13 @@ app.get('/', (request, response) => {
     response.render('home.hbs')
 });
 
+app.get('/my_cart', (request, response) => {
+    response.render('my_cart.hbs')
+});
+
+app.get('/shop', (request, response) => {
+    response.render('shop.hbs')
+});
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
