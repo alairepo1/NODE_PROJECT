@@ -6,7 +6,7 @@ var app = express();
 var port = process.env.PORT || 8080;
 
 app.set('view engine', 'hbs');
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/view'));
 
 app.get('/', (request, response) => {
     response.render('home.hbs')
@@ -22,6 +22,5 @@ app.get('/shop', (request, response) => {
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
-    // console.log(`Server is up on port 8080`)
+        // console.log(`Server is up on port 8080`)
 });
-
