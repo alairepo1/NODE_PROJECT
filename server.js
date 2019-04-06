@@ -8,6 +8,7 @@ var port = process.env.PORT || 8080;
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/views'));
 
+
 app.get('/', (request, response) => {
     response.render('home.hbs')
 });
@@ -18,6 +19,10 @@ app.get('/my_cart', (request, response) => {
 
 app.get('/shop', (request, response) => {
     response.render('shop.hbs')
+});
+
+app.get('/login', (request, response) => {
+    response.render('login.hbs')
 });
 
 app.listen(port, () => {
