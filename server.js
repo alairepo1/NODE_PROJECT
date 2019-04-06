@@ -3,7 +3,21 @@ const hbs = require('hbs');
 
 var app = express();
 
-var port = process.env.PORT || 8080;
+var port = 8080
+    // process.env.PORT || 8080;
+
+//Needed to use partials folder
+hbs.registerPartials(__dirname + '/views/partials');
+
+//Helpers
+hbs.registerHelper('getCurrentYear', () => {
+    return new Date().getFullYear();
+});
+
+
+//Helpers End
+
+
 
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/views'));
