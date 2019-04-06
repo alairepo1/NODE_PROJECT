@@ -39,6 +39,10 @@ app.get('/login', (request, response) => {
     response.render('login.hbs')
 });
 
+app.get('/sign_up', (request, response) => {
+    response.render('sign_up.hbs')
+});
+
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
         // console.log(`Server is up on port 8080`)
