@@ -3,7 +3,7 @@ const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
-
+const url = require('url')
 
 var app = express();
 
@@ -101,6 +101,7 @@ app.post('/insert', function(request, response) {
 });
 
 app.get('/login', (request, response) => {
+    var cur_page = url.parse(request.url).pathname;
     var email = request.body.email;
     var pwd = request.body.pwd;
     var db = utils.getDb();
@@ -110,7 +111,9 @@ app.get('/login', (request, response) => {
         }
         if (user) {
             console.log(user);
-            response.render('home.hbs')
+            if (pwd == user.pwd) {
+                response.render(cur_page);
+            }
         } else {}
     });
 });
