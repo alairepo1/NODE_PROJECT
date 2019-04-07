@@ -33,11 +33,15 @@ app.use(express.static(__dirname + '/views'));
 
 
 app.get('/', (request, response) => {
-    response.render('home.hbs')
+    response.render('home.hbs', {
+        title: "AJZ E-Commerce"
+    })
 });
 
 app.get('/my_cart', (request, response) => {
-    response.render('my_cart.hbs')
+    response.render('my_cart.hbs', {
+        title: "My Cart"
+    })
 });
 
 app.get('/shop', (request, response) => {
