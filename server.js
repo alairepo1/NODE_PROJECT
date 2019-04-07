@@ -3,7 +3,11 @@ const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
+<<<<<<< HEAD
 //express-authenticator unused
+=======
+const url = require('url')
+>>>>>>> b978903ca2df2161179982bdbc7237a0fc7f7ff1
 
 var app = express();
 
@@ -14,7 +18,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 var port = 8080;
-    // process.env.PORT || 8080;
+// process.env.PORT || 8080;
 
 //Needed to use partials folder
 hbs.registerPartials(__dirname + '/views/partials');
@@ -44,6 +48,7 @@ app.get('/my_cart', (request, response) => {
     })
 });
 
+<<<<<<< HEAD
 var itemlist = require('./models/products.js');
 
 app.get('/shop', (request, response, next) => {
@@ -53,6 +58,13 @@ app.get('/shop', (request, response, next) => {
         title: 'shop',
         products: items}
     )
+=======
+app.get('/shop', (request, response) => {
+    response.render('shop.hbs', {
+        name: "converse",
+        price: 50.00
+    })
+>>>>>>> b978903ca2df2161179982bdbc7237a0fc7f7ff1
 });
 
 app.get('/login', (request, response) => {
@@ -60,8 +72,12 @@ app.get('/login', (request, response) => {
 });
 
 app.get('/sign_up', (request, response) => {
+<<<<<<< HEAD
     response.render('sign_up.hbs',{
         title: "Sign Up",
+=======
+    response.render('sign_up.hbs', {
+>>>>>>> b978903ca2df2161179982bdbc7237a0fc7f7ff1
         message: null
     })
 });
@@ -76,19 +92,19 @@ app.post('/insert', function(request, response) {
 
 
     var db = utils.getDb();
-    db.collection('Accounts').findOne({email : email}, function(err, user) {
-        if (err){
+    db.collection('Accounts').findOne({ email: email }, function(err, user) {
+        if (err) {
             response.render('404.hbs')
         }
         if (user) {
             console.log(user);
-            response.render('sign_up.hbs',{
+            response.render('sign_up.hbs', {
                 message: "Account already exists, Try again."
             })
 
-        }else{
+        } else {
 
-            if (pwd === pwd2){
+            if (pwd === pwd2) {
                 db.collection('Accounts').insertOne({
                     email: email,
                     pwd: pwd
@@ -100,7 +116,7 @@ app.post('/insert', function(request, response) {
                         message: `Account ${email} created`
                     })
                 });
-            }else {
+            } else {
                 response.render('sign_up.hbs', {
                     message: `Password does not match`
                 })
@@ -146,7 +162,7 @@ app.get('/getall-shoes', (request, response) => {
             response.send("Cannot find shoes")
         }
         response.send(result);
-    }, ()=> {
+    }, () => {
         db.close();
         response.render('')
     })
