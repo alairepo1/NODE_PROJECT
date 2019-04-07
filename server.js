@@ -46,24 +46,30 @@ app.get('/my_cart', (request, response) => {
     })
 });
 
-var itemlist = require('./models/products.js');
+//
+//Shop page
+
 
 app.get('/shop', (request, response, next) => {
-    var items = itemlist.find();
-
-    response.render('shop.hbs', {
-            title: 'shop',
-            products: items
+    var db = utils.getDb();
+    db.collection('Shoes').find({}).toArray((err, docs)=>{
+        if (err){
+            response.render('404',
+                {error: "Unable to connect to database"})
         }
-    );
+        var productChunks = [];
+        var chunkSize = 3;
+        for (var i=0; i< docs.length; i+=chunkSize){
+            productChunks.push(docs.slice(i+chunkSize));
+        }
+        response.render('shop.hbs',{
+            products: productChunks
+        })
+    });
 });
 
-app.get('/shop', (request, response) => {
-    response.render('shop.hbs', {
-        name: "converse",
-        price: 50.00
-    })
-});
+//
+//Shop page end
 
 
 app.get('/login', (request, response) => {
@@ -125,7 +131,8 @@ app.post('/insert_login', (request, response) => {
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
         if (err) {
-            response.render('404.hbs')
+            response.render('404.hbs',
+                {error: "Could not connect to database"})
         }
         if (user && user.email != '') {
             if (pwd == user.pwd) {
@@ -162,6 +169,11 @@ app.get('/getall-shoes', (request, response) => {
     })
 });
 
+app.get('/404', (request, response)=> {
+    response.render('404',{
+        error: "Cannot connect to the server."
+    })
+});
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`);
