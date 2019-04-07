@@ -3,7 +3,7 @@ const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
-
+//express-authenticator unused
 
 var app = express();
 
@@ -33,18 +33,26 @@ app.use(express.static(__dirname + '/views'));
 
 
 app.get('/', (request, response) => {
-    response.render('home.hbs')
+    response.render('home.hbs',{
+        title: "AJZ E-Commerce"
+    })
 });
 
 app.get('/my_cart', (request, response) => {
-    response.render('my_cart.hbs')
+    response.render('my_cart.hbs', {
+        title: "My Cart"
+    })
 });
 
-app.get('/shop', (request, response) => {
-    response.render('shop.hbs',{
-        name: "converse",
-        price: 50.00
-    })
+var itemlist = require('./models/products.js');
+
+app.get('/shop', (request, response, next) => {
+    var items = itemlist.find();
+
+    response.render('shop.hbs', {
+        title: 'shop',
+        products: items}
+    )
 });
 
 app.get('/login', (request, response) => {
@@ -53,6 +61,7 @@ app.get('/login', (request, response) => {
 
 app.get('/sign_up', (request, response) => {
     response.render('sign_up.hbs',{
+        title: "Sign Up",
         message: null
     })
 });
@@ -100,6 +109,35 @@ app.post('/insert', function(request, response) {
     })
 });
 
+app.post('/insert_login', (request, response) => {
+    var email = request.body.email;
+    var pwd = request.body.pwd;
+    var db = utils.getDb();
+    db.collection('Accounts').findOne({ email: email }, function(err, user) {
+        if (err) {
+            response.render('404.hbs')
+        }
+        if (user && user.email != '') {
+            if (pwd == user.pwd) {
+                response.redirect('/');
+            } else {
+                response.render('login.hbs', {
+                    message: 'Incorrect password',
+                    email: user.email
+                });
+            }
+        } else if (user.email == '') {
+            response.render('login.hbs', {
+                message: 'E-mail can\'t be blank'
+            });
+
+        } else {
+            response.render('login.hbs', {
+                message: 'Invalid email or password'
+            });
+        }
+    });
+});
 
 app.get('/getall-shoes', (request, response) => {
     var db = utils.getDb();
