@@ -3,6 +3,7 @@ const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
+const url = require('url');
 
 //express-authenticator unused
 
@@ -35,7 +36,7 @@ app.use(express.static(__dirname + '/views'));
 
 
 app.get('/', (request, response) => {
-    response.render('home.hbs',{
+    response.render('home.hbs', {
         title: "AJZ E-Commerce"
     })
 });
@@ -48,6 +49,7 @@ app.get('/my_cart', (request, response) => {
 
 //
 //Shop page
+var itemlist = require('./models/products.js');
 
 
 app.get('/shop', (request, response, next) => {
@@ -70,7 +72,6 @@ app.get('/shop', (request, response, next) => {
 
 //
 //Shop page end
-
 
 app.get('/login', (request, response) => {
     response.render('login.hbs')
