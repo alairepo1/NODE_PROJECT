@@ -8,11 +8,11 @@ module.exports.getDb  = () => {
 
 module.exports.init = function(callback) {
 
-    MongoClient.connect('mongodb://localhost:27017/test', function(err, client) {
+    MongoClient.connect('mongodb://localhost:27017/projectdb', function(err, client) {
         if (err) {
             return console.log("Unable to connect to DB");
         }
-        _db = client.db('test');
+        _db = client.db('projectdb');
         console.log("Successfully connected to MongoDB server");
 
     });

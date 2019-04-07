@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>sign up</title>
-    <script src="../scripts/login.js" defer></script>
 </head>
 <body>
 <h1>Sign up page</h1>
@@ -11,12 +10,15 @@
 <a href="/">Home</a>
 <a href="/shop">Shop</a>
 <a href="/my_cart">My Cart</a><br>
-<form>
-<label>Enail:</label><br> <input id="email" type="text" size="20"><br>
-<label>User Name:</label><br> <input id="user" type="text" size="20"><br>
-<label>Password:</label><br> <input id="pwd" type="text" size="20"><br>
-<label>Enter Password Again:</label><br> <input id="pwd2" type="text" size="20"><br>
+<form action="/insert" method="post">
+<label>E-mail:</label><br> <input id="email" name="email" minlength="5" maxlength="15" type="text" size="20"><br>
+<label>Password:</label><br> <input id="pwd" name="pwd" minlength="5" maxlength="15" type="text" size="20"><br>
+<label>Enter Password Again:</label><br> <input id="pwd2" minlength="5" maxlength="15" name="pwd2" type="text" size="20"><br>
+<input type="submit" value="create account">
+    <br>
+    {{message}}
 </form>
+
 {{>footer}}
 </body>
 </html>
