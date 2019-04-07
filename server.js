@@ -102,18 +102,26 @@ app.post('/insert', function(request, response) {
 
 app.post('/insert_login', (request, response) => {
     var email = request.body.email;
-    console.log(email)
     var pwd = request.body.pwd;
-    console.log(pwd)
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
         if (err) {
             response.render('404.hbs')
         }
-        if (user) {
+        if (user && user.email != '') {
             if (pwd == user.pwd) {
-                response.render('home.hbs');
+                response.redirect('/');
+            } else {
+                response.render('login.hbs', {
+                    message: 'Incorrect password',
+                    email: user.email
+                });
             }
+        } else if (user.email == '') {
+            response.render('login.hbs', {
+                message: 'E-mail can\'t be blank'
+            });
+
         } else {
             response.render('login.hbs', {
                 message: 'Invalid email or password'
