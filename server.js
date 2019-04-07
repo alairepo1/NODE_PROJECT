@@ -100,9 +100,11 @@ app.post('/insert', function(request, response) {
     })
 });
 
-app.post('/login', (request, response) => {
+app.post('/insert_login', (request, response) => {
     var email = request.body.email;
+    console.log(email)
     var pwd = request.body.pwd;
+    console.log(pwd)
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
         if (err) {
