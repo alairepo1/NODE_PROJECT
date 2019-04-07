@@ -63,6 +63,7 @@ app.get('/shop', (request, response, next) => {
         for (var i=0; i< docs.length; i+=chunkSize){
             productChunks.push(docs.slice(i+chunkSize));
         }
+
         response.render('shop.hbs',{
             products: productChunks
         })
