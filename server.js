@@ -49,7 +49,6 @@ app.get('/my_cart', (request, response) => {
 
 //
 //Shop page
-var itemlist = require('./models/products.js');
 
 
 app.get('/shop', (request, response, next) => {
