@@ -3,11 +3,9 @@ const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
-<<<<<<< HEAD
+
 //express-authenticator unused
-=======
-const url = require('url')
->>>>>>> b978903ca2df2161179982bdbc7237a0fc7f7ff1
+
 
 var app = express();
 
@@ -48,36 +46,32 @@ app.get('/my_cart', (request, response) => {
     })
 });
 
-<<<<<<< HEAD
 var itemlist = require('./models/products.js');
 
 app.get('/shop', (request, response, next) => {
     var items = itemlist.find();
 
     response.render('shop.hbs', {
-        title: 'shop',
-        products: items}
-    )
-=======
+            title: 'shop',
+            products: items
+        }
+    );
+});
+
 app.get('/shop', (request, response) => {
     response.render('shop.hbs', {
         name: "converse",
         price: 50.00
     })
->>>>>>> b978903ca2df2161179982bdbc7237a0fc7f7ff1
 });
+
 
 app.get('/login', (request, response) => {
     response.render('login.hbs')
 });
 
 app.get('/sign_up', (request, response) => {
-<<<<<<< HEAD
-    response.render('sign_up.hbs',{
-        title: "Sign Up",
-=======
     response.render('sign_up.hbs', {
->>>>>>> b978903ca2df2161179982bdbc7237a0fc7f7ff1
         message: null
     })
 });
@@ -172,5 +166,4 @@ app.get('/getall-shoes', (request, response) => {
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`);
     utils.init();
-    // console.log(`Server is up on port 8080`)
 });
