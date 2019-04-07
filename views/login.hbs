@@ -16,9 +16,11 @@
     <form action="/login" method="get">
         <label>User Name:</label><br> <input id="user" type="text" size="20"><br>
         <label>Password:</label><br> <input id="pwd" type="text" size="20"><br>
-        <input type="submit" value="Login">
+        <input type="submit" value="Login"><br>  
+        {{message}} <br>
         <a href="/sign_up">Don't have an account yet?</a>
     </form>
+
     {{>footer}}
 </body>
 

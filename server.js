@@ -114,7 +114,11 @@ app.get('/login', (request, response) => {
             if (pwd == user.pwd) {
                 response.render(cur_page);
             }
-        } else {}
+        } else {
+            response.render('login.hbs', {
+                message: 'Invalid email or password'
+            });
+        }
     });
 });
 
