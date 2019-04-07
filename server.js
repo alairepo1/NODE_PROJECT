@@ -100,8 +100,7 @@ app.post('/insert', function(request, response) {
     })
 });
 
-app.get('/login', (request, response) => {
-    var cur_page = url.parse(request.url).pathname;
+app.post('/login', (request, response) => {
     var email = request.body.email;
     var pwd = request.body.pwd;
     var db = utils.getDb();
@@ -110,9 +109,8 @@ app.get('/login', (request, response) => {
             response.render('404.hbs')
         }
         if (user) {
-            console.log(user);
             if (pwd == user.pwd) {
-                response.render(cur_page);
+                response.render('home.hbs');
             }
         } else {
             response.render('login.hbs', {
