@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Shop</title>
+    <script src="shop.js" defer></script>
 </head>
 <body>
 <h1>Shop</h1>
@@ -15,10 +16,10 @@
 </a>
 
 <br>
-
-<a href="/getall-shoes">Load shoes </a>
-    <div>
-        {{# each items}}
+<!--<a href="/getall-shoes">Load shoes </a> -->
+    <div class="items">
+        <img src="images/classic_low_top.png" alt="classic_low_top" height="100" weidth="100">
+        <button type="button" onclick="addToCart()">add to cart</button><br>
     </div>
 
 {{>footer}}
