@@ -3,15 +3,16 @@ const MongoClient = require('mongodb').MongoClient;
 const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
 const session = require('express-session');
-
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const url = require('url');
 const fs = require('fs');
-    //express-authenticator unused
-const cookieParser = require('cookie-parser');
-const csrf = require('csurf');
 const expressValidator = require('express-validator');
+const cookieParser = require('cookie-parser');
+//express-authenticator unused
+    //express-authenticator unused
+const csrf = require('csurf');
+
 const csrfProtection = csrf();
 
 var app = express();
@@ -24,6 +25,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(cookieParser());
+app.use(session({ secret: 'krunal', resave: false, saveUninitialized: true, }));
+app.use(expressValidator());
 
 
 
@@ -106,10 +111,11 @@ app.get('/shop', (request, response, next) => {
 //Shop page end
 
 app.get('/login', (request, response) => {
-    response.render('login.hbs')
+    response.render('login.hbs', { errors: request.session.errors });
+    request.session.errors = null;
 });
 
-app.get('/sign_up', (request, response) => {
+app.get('/insert', (request, response) => {
     response.render('sign_up.hbs', {
         message: null,
         csrfToken: request.csrfToken
