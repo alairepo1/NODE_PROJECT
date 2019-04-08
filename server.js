@@ -1,19 +1,25 @@
+
 const MongoClient = require('mongodb').MongoClient;
 const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
+const session = require('express-session');
+
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const url = require('url');
 const fs = require('fs');
     //express-authenticator unused
-const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
-
+const expressValidator = require('express-validator');
 const csrfProtection = csrf();
 
 var app = express();
 
-app.use(csProtection);
+app.use(session({ secret: 'krunal', resave: false, saveUninitialized: true, }));
+app.use(expressValidator());
+
+app.use(csrfProtection);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -124,25 +130,34 @@ app.get('/logout', (request, response) => {
 //mongoDB
 
 app.post('/insert', function(request, response) {
+
     var email = request.body.email;
     var pwd = request.body.pwd;
     var pwd2 = request.body.pwd2;
 
-
-
+    request.checkBody('email', 'Email is required').notEmpty();
+    request.checkBody('email', 'Please enter a valid email').isEmail();
+    request.checkBody('pwd', 'Password is required').notEmpty();
+    request.checkBody('pwd2', 'Please type your password again').notEmpty();
+    const errors = request.validationErrors();
+    var error_msg = [];
+    if (errors) {
+        for (var i = 0; i < errors.length; i++) {
+            error_msg.push(errors[i].msg);
+        }
+    }
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
         if (err) {
             response.render('404.hbs')
         }
         if (user) {
-            console.log(user);
+            error_msg.push("Account already exists, Try again.");
             response.render('sign_up.hbs', {
-                message: "Account already exists, Try again."
+                error: error_msg
             })
 
         } else {
-
             if (pwd === pwd2) {
                 db.collection('Accounts').insertOne({
                     email: email,
@@ -156,8 +171,9 @@ app.post('/insert', function(request, response) {
                     })
                 });
             } else {
+                error_msg.push('Password does not match');
                 response.render('sign_up.hbs', {
-                    message: `Password does not match`
+                    message: error_msg
                 })
             }
         }
