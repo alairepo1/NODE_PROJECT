@@ -8,7 +8,12 @@
             <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="/shop">Shop Now</a>
             <a class="nav-item nav-link" href="/my_cart">My Cart</a>
-            <a class="nav-item nav-link" href="/login">Log In</a> 
+            {{#if user}}
+                <a class="nav-item nav-link" href="/">{{username}}</a>
+                <a class="nav-item nav-link" href="/logout">Logout</a>
+            {{else}}
+                <a class="nav-item nav-link" href="/login">Log In</a> 
+            {{/if}}
             <!--<a class="nav-item nav-link disabled" href="#">Disabled</a>-->
         </div>
     </div>
