@@ -21,9 +21,16 @@
 <label>E-mail:</label><br> <input id="email" name="email" minlength="5" maxlength="30" type="text" size="30"><br>
 <label>Password:</label><br> <input id="pwd" name="pwd" minlength="5" maxlength="15" type="password" size="20"><br>
 <label>Enter Password Again:</label><br> <input id="pwd2" minlength="5" maxlength="15" name="pwd2" type="password" size="20"><br>
+<<<<<<< HEAD
 <br><input type="submit" value="create account">
+=======
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+<input type="submit" value="create account">
+    <br>
+    {{message}}
+    {{ csrfToken}}}
+>>>>>>> 9077e9ae50b0a12d08da0c667afa61a0300dafdc
 </form>
-
 {{>footer}}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

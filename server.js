@@ -4,16 +4,24 @@ const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const url = require('url');
+<<<<<<< HEAD
 const fs = require('fs')
 const expressValidator = require('express-validator');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 //express-authenticator unused
+=======
+const fs = require('fs');
+    //express-authenticator unused
+const session = require('express-session');
+const csrf = require('csurf');
+>>>>>>> 9077e9ae50b0a12d08da0c667afa61a0300dafdc
 
+const csrfProtection = csrf();
 
 var app = express();
 
-
+app.use(csProtection);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -49,7 +57,7 @@ app.get('/', (request, response) => {
     var username = "";
     if (fs.existsSync("./user_info.json")) {
         var user_info = JSON.parse(fs.readFileSync('user_info.json'));
-        app.locals.user = true
+        app.locals.user = true;
         username = user_info.username
     }
     response.render('home.hbs', {
@@ -63,7 +71,7 @@ app.get('/my_cart', (request, response) => {
     var username = "";
     if (fs.existsSync("./user_info.json")) {
         var user_info = JSON.parse(fs.readFileSync('user_info.json'));
-        app.locals.user = true
+        app.locals.user = true;
         username = user_info.username
     }
     response.render('my_cart.hbs', {
@@ -81,7 +89,7 @@ app.get('/shop', (request, response, next) => {
     var username = "";
     if (fs.existsSync("./user_info.json")) {
         var user_info = JSON.parse(fs.readFileSync('user_info.json'));
-        app.locals.user = true
+        app.locals.user = true;
         username = user_info.username
     }
     var db = utils.getDb();
@@ -91,13 +99,11 @@ app.get('/shop', (request, response, next) => {
         }
         var productChunks = [];
         var chunkSize = 3;
-        for (var i = 0; i < docs.length; i += chunkSize) {
-            productChunks.push(docs.slice(i + chunkSize));
+        for (var i = 0; i < docs.length; i+= chunkSize) {
+            productChunks.push(docs.slice(i, i + chunkSize));
         }
-
         response.render('shop.hbs', {
-            products: productChunks,
-            username: username
+            products: productChunks
         })
     });
 });
@@ -112,7 +118,8 @@ app.get('/login', (request, response) => {
 
 app.get('/insert', (request, response) => {
     response.render('sign_up.hbs', {
-        message: null
+        message: null,
+        csrfToken: request.csrfToken
     })
 });
 
@@ -194,7 +201,7 @@ app.post('/insert_login', (request, response) => {
                 user_info = {
                     username: user.email,
                     cart: []
-                }
+                };
                 fs.writeFileSync('user_info.json', JSON.stringify(user_info, undefined, 2));
             } else {
                 response.render('login.hbs', {
