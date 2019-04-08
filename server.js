@@ -6,11 +6,14 @@ const bodyParser = require('body-parser');
 const url = require('url');
 const fs = require('fs');
     //express-authenticator unused
+const session = require('express-session');
+const csrf = require('csurf');
 
+const csrfProtection = csrf();
 
 var app = express();
 
-
+app.use(csProtection);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -102,7 +105,8 @@ app.get('/login', (request, response) => {
 
 app.get('/sign_up', (request, response) => {
     response.render('sign_up.hbs', {
-        message: null
+        message: null,
+        csrfToken: request.csrfToken
     })
 });
 
