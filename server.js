@@ -42,7 +42,7 @@ app.get('/', (request, response) => {
     var username = "";
     if (fs.existsSync("./user_info.json")) {
         var user_info = JSON.parse(fs.readFileSync('user_info.json'));
-        app.locals.user = true
+        app.locals.user = true;
         username = user_info.username
     }
     response.render('home.hbs', {
@@ -56,7 +56,7 @@ app.get('/my_cart', (request, response) => {
     var username = "";
     if (fs.existsSync("./user_info.json")) {
         var user_info = JSON.parse(fs.readFileSync('user_info.json'));
-        app.locals.user = true
+        app.locals.user = true;
         username = user_info.username
     }
     response.render('my_cart.hbs', {
@@ -174,7 +174,7 @@ app.post('/insert_login', (request, response) => {
                 user_info = {
                     username: user.email,
                     cart: []
-                }
+                };
                 fs.writeFileSync('user_info.json', JSON.stringify(user_info, undefined, 2));
             } else {
                 response.render('login.hbs', {
