@@ -16,7 +16,8 @@
     <form action="/insert_login" method="post">
         <label>E-mail:</label><br> <input id="email" name="email" type="text" size="20"><br>
         <label>Password:</label><br> <input id="pwd" name="pwd" type="password" size="20"><br>
-        <input type="submit" value="Login"><br>  
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="submit" value="Login"><br>
         {{message}} <br>
         <a href="/sign_up">Don't have an account yet?</a>
     </form>

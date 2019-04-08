@@ -4,17 +4,23 @@ const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const url = require('url');
+const session = require('express-session');
+const csrf = require('csurf');
 
 //express-authenticator unused
 
 
 var app = express();
 
+var csrfProtection = csrf();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(session({secret: 'mysecret', resave: false, saveUninitialized: false}));
+app.use(csrfProtection);
+
 
 var port = 8080;
 // process.env.PORT || 8080;
@@ -74,12 +80,13 @@ app.get('/shop', (request, response, next) => {
 //Shop page end
 
 app.get('/login', (request, response) => {
-    response.render('login.hbs')
+    response.render('login.hbs', { csrfToken: request.csrfToken()});
 });
 
 app.get('/sign_up', (request, response) => {
     response.render('sign_up.hbs', {
-        message: null
+        message: null,
+        csrfToken: request.csrfToken()
     })
 });
 
@@ -123,7 +130,7 @@ app.post('/insert', function(request, response) {
                 })
             }
         }
-    })
+    });
 });
 
 app.post('/insert_login', (request, response) => {
