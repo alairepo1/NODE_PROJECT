@@ -19,18 +19,11 @@ var app = express();
 
 app.use(session({ secret: 'krunal', resave: false, saveUninitialized: true, }));
 app.use(expressValidator());
-
 app.use(csrfProtection);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-app.use(cookieParser());
-app.use(session({ secret: 'krunal', resave: false, saveUninitialized: true, }));
-app.use(expressValidator());
-
-
 
 var port = 8080;
 // process.env.PORT || 8080;
