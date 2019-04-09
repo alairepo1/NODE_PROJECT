@@ -1,4 +1,3 @@
-
 const MongoClient = require('mongodb').MongoClient;
 const utils = require('./server_utils/mongo_util.js');
 const express = require('express');
@@ -9,17 +8,15 @@ const url = require('url');
 const fs = require('fs');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
-//express-authenticator unused
-    //express-authenticator unused
-const csrf = require('csurf');
+// const csrf = require('csurf');
 
-const csrfProtection = csrf();
+// const csrfProtection = csrf();
 
 var app = express();
 
 app.use(session({ secret: 'krunal', resave: false, saveUninitialized: true, }));
 app.use(expressValidator());
-app.use(csrfProtection);
+// app.use(csrfProtection);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -111,7 +108,7 @@ app.get('/login', (request, response) => {
 app.get('/insert', (request, response) => {
     response.render('sign_up.hbs', {
         message: null,
-        csrfToken: request.csrfToken
+        // csrfToken: request.csrfToken
     })
 });
 
@@ -214,24 +211,24 @@ app.post('/insert_login', (request, response) => {
     });
 });
 
-app.get('/getall-shoes', (request, response) => {
-    var db = utils.getDb();
-    db.collection('Shoes').find({}).toArray(function(err, result) {
-        if (err) {
-            response.send("Cannot find shoes")
-        }
-        response.send(result);
-    }, () => {
-        db.close();
-        response.render('')
-    })
-});
 
 app.get('/404', (request, response) => {
     response.render('404', {
         error: "Cannot connect to the server."
     })
 });
+
+
+//Route to add to cart
+// app.get('/add-to-cart/:id', (request, response)=> {
+//     var db = unils.getDb();
+//
+//     var productID = request.body._id;
+//     var prodcutName = request.body.name;
+//     var prodcutPrice = request.body.price;
+//
+//
+// });
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`);

@@ -1,0 +1,7 @@
+
+.background {
+    background-image: url("../images/backgound.jpg");
+    background-attachment: fixed;
+    height: 100%;
+    width: 100%;
+}
