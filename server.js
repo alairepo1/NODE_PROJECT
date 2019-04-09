@@ -73,7 +73,7 @@ app.get('/my_cart', (request, response) => {
 //Shop page
 
 
-app.get('/shop', (request, response, next) => {
+app.get('/shop', (request, response) => {
     app.locals.user = false;
     var username = "";
     if (fs.existsSync("./user_info.json")) {
@@ -179,12 +179,19 @@ app.post('/insert', function(request, response) {
 app.post('/insert_login', (request, response) => {
     var email = request.body.email;
     var pwd = request.body.pwd;
+
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
+
         if (err) {
             response.render('404.hbs', { error: "Could not connect to database" })
         }
-        if (user && user.email != '') {
+
+        if (!user){
+            response.render('login.hbs', {
+                message: 'Account does not exist'
+            })
+        } else if (user && user.email != '') {
             if (pwd == user.pwd) {
                 response.redirect('/');
                 user_info = {

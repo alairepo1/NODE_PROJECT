@@ -20,14 +20,14 @@
             <form action="/insert_login" method="post">
                 <label>E-mail:</label><br> <input id="email" name="email" type="text" size="20"><br>
                 <label>Password:</label><br> <input id="pwd" name="pwd" type="password" size="20"><br>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <!--<input type="hidden" name="_csrf" value="{{ csrfToken }}">-->
                 <br>
                 <input type="submit" value="Login"><br>
                 {{message}} <br>
                 <a href="/insert">Don't have an account yet?</a>
             </form>
 
-            {{>footer}}
+    {{>footer}}
 
     </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
