@@ -9,7 +9,7 @@ const fs = require('fs');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
 // const csrf = require('csurf');
-
+// const cart = require('Models/cart.js');
 // const csrfProtection = csrf();
 
 var app = express();
@@ -49,8 +49,10 @@ app.get('/', (request, response) => {
         app.locals.user = true;
         username = user_info.username
     }
+
     response.render('home.hbs', {
-        title: "AJZ E-Commerce",
+        title: "AJZ Shoe shop",
+        message: "Welcome to AJZ Shoe shop",
         username: username
     })
 });
@@ -92,7 +94,8 @@ app.get('/shop', (request, response) => {
             productChunks.push(docs.slice(i, i + chunkSize));
         }
         response.render('shop.hbs', {
-            products: productChunks
+            products: productChunks,
+            username: username
         })
     });
 });
@@ -113,10 +116,11 @@ app.get('/insert', (request, response) => {
 });
 
 app.get('/logout', (request, response) => {
+    app.locals.user = false;
     fs.unlink('user_info.json', function(err) {
         if (err) throw err;
     });
-    app.locals.user = false;
+
     response.render('home.hbs', {
         title: "AJZ E-Commerce",
     })
@@ -182,7 +186,6 @@ app.post('/insert_login', (request, response) => {
 
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
-
         if (err) {
             response.render('404.hbs', { error: "Could not connect to database" })
         }
@@ -196,7 +199,7 @@ app.post('/insert_login', (request, response) => {
                 response.redirect('/');
                 user_info = {
                     username: user.email,
-                    cart: []
+                    id: user._id
                 };
                 fs.writeFileSync('user_info.json', JSON.stringify(user_info, undefined, 2));
             } else {
@@ -227,6 +230,8 @@ app.get('/404', (request, response) => {
 
 
 //Route to add to cart
+//# Get card by first getting user _id, get cart that matches _id and pass into Cart function
+
 // app.get('/add-to-cart/:id', (request, response)=> {
 //     var db = unils.getDb();
 //
@@ -234,6 +239,7 @@ app.get('/404', (request, response) => {
 //     var prodcutName = request.body.name;
 //     var prodcutPrice = request.body.price;
 //
+
 //
 // });
 
