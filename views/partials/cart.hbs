@@ -12,7 +12,10 @@
                                 <div class="col-10">
                                     <h5 class="card-title">{{name}}</h5>
                                     <p class="card-text">Price: ${{price}}</p>
-                                    <button type="button" class="btn btn-primary">Primary</button>
+                                    <form action="/delete-item" method="post">
+                                        <input type="submit" name="{{name}}" class="btn btn-primary" value="Remove">
+                                        <input type="hidden" value="{{_id}}" name="cart_id">
+                                    </form>
                                 </div>
                                 <div class="col-2 ml-auto">
                                     <img class="card-img-top ml-auto" src="{{path}}" alt="Card image cap">
@@ -25,26 +28,5 @@
             {{/each}}
         </div>
     </div>
+    <br>
 {{/each}}
-
-<div class="container">
-    <div class="col">
-        <!--Card 1 -->
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-10">
-                    <h5 class="card-title">Item Name</h5>
-                    <p class="card-text">Quanity: </p>
-                    <a href="#" class="btn btn-primary">Remove</a>
-                    </div>
-                    <div class="col-2 ml-auto">
-                        <img class="card-img-top ml-auto" src="./images/converse_low_top_red.PNG" alt="Card image cap">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--card 1 end-->
-    </div>
-</div>
-

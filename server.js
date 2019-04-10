@@ -8,15 +8,11 @@ const url = require('url');
 const fs = require('fs');
 const expressValidator = require('express-validator');
 const cookieParser = require('cookie-parser');
-// const csrf = require('csurf');
-// const cart = require('Models/cart.js');
-// const csrfProtection = csrf();
-
+var ObjectId = require('mongodb').ObjectID;
 var app = express();
 
 app.use(session({ secret: 'krunal', resave: false, saveUninitialized: true, }));
 app.use(expressValidator());
-// app.use(csrfProtection);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -59,16 +55,32 @@ app.get('/', (request, response) => {
 
 app.get('/my_cart', (request, response) => {
     app.locals.user = false;
-    var username = "";
+    var user_id = "";
+    var username ='';
     if (fs.existsSync("./user_info.json")) {
         var user_info = JSON.parse(fs.readFileSync('user_info.json'));
         app.locals.user = true;
-        username = user_info.username
+        user_id = user_info.id;
+        username = user_info.username;
     }
-    response.render('my_cart.hbs', {
-        title: "My Cart",
-        username: username
-    })
+    var db = utils.getDb();
+
+    db.collection('Cart_'+ user_id).find({}).toArray((err, docs)=>{
+        if (err){
+            response.render('404.hbs',{
+                error: "Cannot connect to database"
+            })
+        }
+        var cart_list = [];
+        for (var i = 0; i < docs.length; i+= 1) {
+            cart_list.push(docs.slice(i, i + 1));
+        }
+        response.render('my_cart',{
+            products: cart_list,
+            username: username
+
+        })
+    });
 });
 
 //
@@ -88,15 +100,21 @@ app.get('/shop', (request, response) => {
         if (err) {
             response.render('404', { error: "Unable to connect to database" })
         }
-        var productChunks = [];
-        var chunkSize = 3;
-        for (var i = 0; i < docs.length; i+= chunkSize) {
-            productChunks.push(docs.slice(i, i + chunkSize));
+
+        if (!docs){
+            throw err;
+        }else {
+            var productChunks = [];
+            var chunkSize = 3;
+            for (var i = 0; i < docs.length; i+= chunkSize) {
+                productChunks.push(docs.slice(i, i + chunkSize));
+            }
+            response.render('shop.hbs', {
+                products: productChunks,
+                username: username
+            })
         }
-        response.render('shop.hbs', {
-            products: productChunks,
-            username: username
-        })
+
     });
 });
 
@@ -121,9 +139,7 @@ app.get('/logout', (request, response) => {
         if (err) throw err;
     });
 
-    response.render('home.hbs', {
-        title: "AJZ E-Commerce",
-    })
+    response.redirect('/')
 });
 
 
@@ -135,10 +151,14 @@ app.post('/insert', function(request, response) {
     var pwd = request.body.pwd;
     var pwd2 = request.body.pwd2;
 
+
     request.checkBody('email', 'Email is required').notEmpty();
     request.checkBody('email', 'Please enter a valid email').isEmail();
     request.checkBody('pwd', 'Password is required').notEmpty();
     request.checkBody('pwd2', 'Please type your password again').notEmpty();
+
+
+
     const errors = request.validationErrors();
     var error_msg = [];
     if (errors) {
@@ -146,6 +166,7 @@ app.post('/insert', function(request, response) {
             error_msg.push(errors[i].msg);
         }
     }
+
     var db = utils.getDb();
     db.collection('Accounts').findOne({ email: email }, function(err, user) {
         if (err) {
@@ -158,7 +179,11 @@ app.post('/insert', function(request, response) {
             })
 
         } else {
-            if (pwd === pwd2) {
+            if (email === "") {
+                response.render('sign_up.hbs', {
+                    error: error_msg
+                })
+            } else if (pwd === pwd2) {
                 db.collection('Accounts').insertOne({
                     email: email,
                     pwd: pwd
@@ -199,7 +224,8 @@ app.post('/insert_login', (request, response) => {
                 response.redirect('/');
                 user_info = {
                     username: user.email,
-                    id: user._id
+                    id: user._id,
+                    cart: []
                 };
                 fs.writeFileSync('user_info.json', JSON.stringify(user_info, undefined, 2));
             } else {
@@ -208,7 +234,7 @@ app.post('/insert_login', (request, response) => {
                     email: user.email
                 });
             }
-        } else if (user.email == '') {
+        } else if (email == '') {
             response.render('login.hbs', {
                 message: 'E-mail can\'t be blank'
             });
@@ -230,18 +256,71 @@ app.get('/404', (request, response) => {
 
 
 //Route to add to cart
-//# Get card by first getting user _id, get cart that matches _id and pass into Cart function
 
-// app.get('/add-to-cart/:id', (request, response)=> {
-//     var db = unils.getDb();
-//
-//     var productID = request.body._id;
-//     var prodcutName = request.body.name;
-//     var prodcutPrice = request.body.price;
-//
+app.post('/add-to-cart', (request, response)=> {
+    //read from user_info to get _id,
+    app.locals.user = false;
+    if (fs.existsSync("./user_info.json")) {
+        var user_info = JSON.parse(fs.readFileSync('user_info.json'));
+        app.locals.user = true;
+        var id = user_info.id
+    }
 
-//
-// });
+    var db = utils.getDb();
+    var userID = id;
+    var productId = request.body.objectid;
+
+    db.collection('Shoes').findOne( { _id : ObjectId(productId) }, (err, doc) => {
+        if (err) {
+            throw err;
+        }
+        if (!doc){
+            response.render('404',{
+                error: "Cannot connect to database"
+            })
+        }else{
+            db.collection(`Cart_${userID}`).insertOne({
+                user_id: userID,
+                item_id: doc._id,
+                name: doc.name,
+                path: doc.path,
+                price: doc.price
+            }, (err, result) => {
+                if (err) {
+                    response.send('Unable to create account');
+                }
+                file = JSON.parse(fs.readFileSync('user_info.json'));
+                file.cart.push({user_id: userID,
+                    item_id: doc._id,
+                    name: doc.name,
+                    path: doc.path,
+                    price: doc.price});
+                fs.writeFileSync('user_info.json', JSON.stringify(file,
+                    undefined, 2));
+                response.redirect('/shop')})
+        }
+    });
+});
+
+app.post('/delete-item', (request, response)=>{
+    app.locals.user = false;
+    if (fs.existsSync("./user_info.json")) {
+        var user_info = JSON.parse(fs.readFileSync('user_info.json'));
+        app.locals.user = true;
+        var id = user_info.id;
+        var username = user_info.username;
+    }
+    var cart_item_id = request.body.cart_id;
+    var db = utils.getDb();
+    db.collection(`Cart_${id}`).remove({_id: ObjectId(cart_item_id)}, (err,response)=> {
+        if (err){
+            response.render('404.hbs',{
+                error: "Database error"
+            })
+        }
+    });
+    response.redirect('/my_cart')
+});
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`);

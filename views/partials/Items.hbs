@@ -1,17 +1,13 @@
 
-
 {{# each products}}
     <div class="container">
     <div class="row">
         {{# each this}}
             <div class="col">
                 <!--Card 1 -->
-                <p class="" display="none"  id="_id">{{id}}</p>
                 <div class="card mt-5 bg-light" style="width: 18rem;">
-                    <img class="card-img-top" src="{{path}}" alt="picture of {{name}}">
+                        <input type="image" class="card-img-top" src="{{path}}" alt="{{id}} width="200" height="200">
                     <div class="card-body">
-                        <!--<h5 class="card-title">Card title</h5>-->
-                        <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" id="type">Type: {{type}}</li>
@@ -20,7 +16,10 @@
                         <li class="list-group-item" id="price">Price: ${{price}}</li>
                     </ul>
                     <div class="card-body">
-                        <a href="/add-to-cart/" class="btn btn-primary" role="button">Add To Cart</a>
+                        <form action="/add-to-cart" method="post">
+                            <input type="submit" value="Add to cart" class="btn btn-primary">
+                        <input type="hidden" value="{{_id}}" name="objectid">
+                        </form>
                     </div>
                 </div>
                 <!--Card 1 end-->
